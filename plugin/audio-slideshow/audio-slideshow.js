@@ -27,6 +27,7 @@
 	var silence;
 	var currentAudio = null;
 	var previousAudio = null;
+	var autoplay = false;
 
 	Reveal.addEventListener( 'fragmentshown', function( event ) {
 //console.debug( "fragmentshown ");
@@ -81,10 +82,23 @@
 		if ( indices.f != undefined && indices.f >= 0 ) id = id + '.' + indices.f;
 		currentAudio = document.getElementById( id );
 		currentAudio.style.display = "block";
-		if ( previousAudio && currentAudio.id != previousAudio.id ) {
-			currentAudio.volume = previousAudio.volume;
-			currentAudio.muted = previousAudio.muted;
+		/* Automatically play audio if either we are advancing
+		 * from previously played audio (i.e. advance
+		 * automatically, but only if the user has clicked the
+		 * play button once) or the audioAutoplay
+		 * configuration parameter is set (i.e. play audio
+		 * even on the first slide or on a slide we're jumping
+		 * to; don't wait for the user to click on
+		 * anything). */
+		if ( previousAudio ) {
+			if ( currentAudio.id != previousAudio.id ) {
+				currentAudio.volume = previousAudio.volume;
+				currentAudio.muted = previousAudio.muted;
 //console.debug( "Play " + currentAudio.id);
+				currentAudio.play();
+			}
+		}
+		else if ( autoplay ) {
 			currentAudio.play();
 		}
 	}
@@ -96,6 +110,7 @@
 		if ( Reveal.getConfig().audioTextToSpeechURL ) textToSpeechURL = Reveal.getConfig().audioTextToSpeechURL;
 		if ( Reveal.getConfig().audioDefaultDuration ) defaultDuration = Reveal.getConfig().audioDefaultDuration;
 		if ( Reveal.getConfig().audioPlayerOpacity ) playerOpacity = Reveal.getConfig().audioPlayerOpacity;
+		if ( Reveal.getConfig().audioAutoplay ) autoplay = Reveal.getConfig().audioAutoplay;
 		if ( 'ontouchstart' in window || navigator.msMaxTouchPoints ) {
 			opacity = 1;		
 		}
