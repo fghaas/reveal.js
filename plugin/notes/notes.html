@@ -539,6 +539,7 @@
 
 					callRevealApi( 'getSlidesAttributes', [], function ( slideAttributes ) {
 						callRevealApi( 'getConfig', [], function ( config ) {
+							// FIXME: calculate totalTime from scheduledStart and scheduledEnd, if set
 							var totalTime = config.totalTime;
 							var minTimePerSlide = config.minimumTimePerSlide || 0;
 							var defaultTiming = config.defaultTiming;
@@ -565,6 +566,7 @@
 								timings.push(timing);
 							}
 							if ( totalTime ) {
+								// FIXME: factor scheduledStart into this
 								// After we've allocated time to individual slides, we summarize it and
 								// subtract it from the total time
 								var remainingTime = totalTime - timings.reduce( function(a, b) { return a + b; }, 0 );
